@@ -1,19 +1,3 @@
-(function() {
-  // Nenu
-  const html = `
-    <button id="accessibility-toggle" onclick="toggleAccessibilityPanel()">
-      <i class="fas fa-universal-access"></i>
-    </button>
-    <div id="accessibility-panel" style="display:none;">
-    </div>
-  `;
-
-  // To body
-  document.addEventListener('DOMContentLoaded', () => {
-    document.body.insertAdjacentHTML('beforeend', html);
-  });
-
-
 // Toggle Panel
 function toggleAccessibilityPanel() {
   const panel = document.getElementById('accessibility-panel');
