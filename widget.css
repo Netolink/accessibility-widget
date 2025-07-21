@@ -1,69 +1,96 @@
-#accessibility-toggle {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background: #005cbf;
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  font-size: 22px;
-  z-index: 9999;
+/* גופן קריא */
+.readable-font {
+  font-family: Arial, Verdana, Tahoma, sans-serif !important;
+}
+
+/* ניגודיות גבוהה */
+.high-contrast {
+  background-color: black !important;
+  color: yellow !important;
+  filter: none !important;
+}
+
+/* ניגודיות כהה */
+.dark-contrast {
+  background-color: #121212 !important;
+  color: #e0e0e0 !important;
+}
+
+/* ניגודיות בהירה */
+.light-contrast {
+  background-color: #fefefe !important;
+  color: #222 !important;
+}
+
+/* ריווח אותיות */
+.letter-spacing {
+  letter-spacing: 0.15em !important;
+}
+
+/* ריווח שורות */
+.line-spacing {
+  line-height: 1.8 !important;
+}
+
+/* סמן גדול */
+.big-cursor * {
+  cursor: url('data:image/svg+xml;utf8,<svg fill="black" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M3 3l18 9-7 1-2 7z"/></svg>'), auto !important;
+}
+
+/* מצב קריאה */
+.reading-mode {
+  background-color: #f4f1de !important;
+  color: #222 !important;
+  font-size: 1.2em !important;
+  line-height: 1.8 !important;
+  max-width: 700px;
+  margin: auto;
+  padding: 20px;
+  font-family: Georgia, serif !important;
+}
+
+/* איפוס סגנונות לקריאות וקונטרסטים */
+.reading-mode a,
+.reading-mode button {
+  color: #1d3557 !important;
+}
+
+/* כפתורים ותפריט - ייתכן ותוכל להתאים לפי הצורך */
+#accessibility-panel button {
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  margin: 3px 5px 6px 0;
+  font-size: 13px;
   cursor: pointer;
 }
 
-#accessibility-panel {
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background: #fff;
-  color: #000;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  width: 280px;
-  max-height: 80vh;
-  overflow-y: auto;
-  z-index: 9999;
-  display: none;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-  font-family: sans-serif;
+#accessibility-panel button:hover {
+  background-color: #e0e0e0;
 }
 
-.accessibility-group {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
-.accessibility-group:last-child {
-  border-bottom: none;
-}
+/* כותרות קבוצות בתפריט */
 .accessibility-group strong {
   display: block;
   margin-bottom: 6px;
   font-size: 14px;
-}
-.accessibility-group button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  margin: 3px 3px 6px 0;
-  padding: 6px 10px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background: #f9f9f9;
-  cursor: pointer;
-}
-.accessibility-group button:hover {
-  background: #e0e0e0;
+  font-weight: 600;
 }
 
-/* Class toggles */
-.readable-font * { font-family: Arial, sans-serif !important; }
-.high-contrast { filter: contrast(1.5); background: black; color: yellow; }
-.dark-contrast { background: #111; color: #eee; }
-.light-contrast { background: #fff; color: #000; }
-.letter-spacing * { letter-spacing: 2px !important; }
-.line-spacing * { line-height: 1.8 !important; }
-.big-cursor { cursor: url('https://cdn.jsdelivr.net/gh/Netolink/accessibility-widget/cursor-large.cur'), auto !important; }
-.reading-mode *:not(#accessibility-panel):not(script):not(style) { background: #fdf6e3 !important; color: #000 !important; }
+/* תמיכה בתגובה נייד */
+@media screen and (max-width: 400px) {
+  #accessibility-panel {
+    width: 90vw !important;
+    right: 5vw !important;
+    bottom: 70px !important;
+    max-height: 60vh !important;
+  }
+  #accessibility-toggle {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 20px !important;
+    bottom: 15px !important;
+    right: 15px !important;
+  }
+}
