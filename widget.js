@@ -109,12 +109,38 @@ window.toggleAccessibilityPanel = function () {
   panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
 };
 
+// מוסיף מחלקות של גודל טקסט
+const fontSizeStyles = document.createElement('style');
+fontSizeStyles.innerHTML = `
+  .font-size-default { font-size: 100% !important; }
+  .font-size-large { font-size: 115% !important; }
+  .font-size-xlarge { font-size: 130% !important; }
+`;
+document.head.appendChild(fontSizeStyles);
+
+// מוסיף כברירת מחדל
+document.body.classList.add('font-size-default');
+
+let fontSizeLevel = 0;
+const fontSizeClasses = ['font-size-default', 'font-size-large', 'font-size-xlarge'];
+
+function updateFontSizeClass() {
+  document.body.classList.remove(...fontSizeClasses);
+  document.body.classList.add(fontSizeClasses[fontSizeLevel]);
+}
+
 window.increaseFont = function () {
-  document.body.style.fontSize = 'larger';
+  if (fontSizeLevel < fontSizeClasses.length - 1) {
+    fontSizeLevel++;
+    updateFontSizeClass();
+  }
 };
 
 window.decreaseFont = function () {
-  document.body.style.fontSize = 'smaller';
+  if (fontSizeLevel > 0) {
+    fontSizeLevel--;
+    updateFontSizeClass();
+  }
 };
 
 window.toggleReadableFont = function () {
@@ -169,11 +195,18 @@ window.highlightHeadings = function () {
 
 window.highlightFocus = function () {
   const existing = document.getElementById('focus-highlight-style');
-  if (existing) existing.remove();
-  else {
+  if (existing) {
+    existing.remove();
+  } else {
     const style = document.createElement('style');
     style.id = 'focus-highlight-style';
-    style.innerHTML = `*:focus { outline: 3px solid orange !important; outline-offset: 2px !important; }`;
+    style.innerHTML = `
+      *:focus {
+        outline: 3px solid orange !important;
+        outline-offset: 2px !important;
+        box-shadow: 0 0 5px 2px orange !important;
+      }
+    `;
     document.head.appendChild(style);
   }
 };
@@ -194,7 +227,12 @@ window.stopAnimations = function () {
   if (!document.getElementById('stop-animation-style')) {
     const style = document.createElement('style');
     style.id = 'stop-animation-style';
-    style.innerHTML = `* { animation: none !important; transition: none !important; }`;
+    style.innerHTML = `
+      *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    `;
     document.head.appendChild(style);
   }
 };
