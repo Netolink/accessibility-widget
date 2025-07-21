@@ -70,9 +70,9 @@ body.line-spacing * {
 }
 
 /* הסתרת אלמנטים מסיחים */
-.reading-mode *:not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(li):not(blockquote):not(a) {
+/*.reading-mode *:not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(li):not(blockquote):not(a) {
   display: none !important;
-}
+}*/
 
 /* הסתרת מדיה */
 .reading-mode img,
