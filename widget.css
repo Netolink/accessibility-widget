@@ -4,22 +4,40 @@
 }
 
 /* ניגודיות גבוהה */
-.high-contrast {
+body.high-contrast {
   background-color: black !important;
   color: yellow !important;
   filter: none !important;
 }
 
+body.high-contrast a {
+  color: yellow !important;
+}
+
 /* ניגודיות כהה */
-.dark-contrast {
+body.dark-contrast {
   background-color: #121212 !important;
   color: #e0e0e0 !important;
 }
 
+body.dark-contrast a {
+  color: #66aaff !important;
+}
+
 /* ניגודיות בהירה */
-.light-contrast {
-  background-color: #fefefe !important;
-  color: #222 !important;
+body.light-contrast {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+body.light-contrast a {
+  color: #0033cc !important;
+}
+
+body.light-contrast header,
+body.light-contrast footer,
+body.light-contrast section {
+  background-color: #f5f5f5 !important;
 }
 
 /* ריווח אותיות */
@@ -28,7 +46,8 @@
 }
 
 /* ריווח שורות */
-.line-spacing {
+body.line-spacing,
+body.line-spacing * {
   line-height: 1.8 !important;
 }
 
@@ -37,22 +56,44 @@
   cursor: url('data:image/svg+xml;utf8,<svg fill="black" height="32" viewBox="0 0 24 24" width="32" xmlns="http://www.w3.org/2000/svg"><path d="M3 3l18 9-7 1-2 7z"/></svg>'), auto !important;
 }
 
-/* מצב קריאה */
+/* מצב קריאה משודרג */
 .reading-mode {
   background-color: #f4f1de !important;
   color: #222 !important;
   font-size: 1.2em !important;
   line-height: 1.8 !important;
-  max-width: 700px;
-  margin: auto;
-  padding: 20px;
+  max-width: 700px !important;
+  margin: auto !important;
+  padding: 20px !important;
   font-family: Georgia, serif !important;
+  box-shadow: none !important;
 }
 
-/* איפוס סגנונות לקריאות וקונטרסטים */
+/* הסתרת אלמנטים מסיחים */
+.reading-mode *:not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(li):not(blockquote):not(a) {
+  display: none !important;
+}
+
+/* הסתרת מדיה */
+.reading-mode img,
+.reading-mode video,
+.reading-mode iframe,
+.reading-mode svg,
+.reading-mode canvas {
+  display: none !important;
+}
+
+/* קישורים עם צבע קריא */
 .reading-mode a,
 .reading-mode button {
   color: #1d3557 !important;
+  text-decoration: underline !important;
+}
+
+/* ביטול אנימציות במצב קריאה */
+.reading-mode * {
+  animation: none !important;
+  transition: none !important;
 }
 
 /* כפתורים ותפריט - ייתכן ותוכל להתאים לפי הצורך */
