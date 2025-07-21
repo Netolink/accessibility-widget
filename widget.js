@@ -104,96 +104,110 @@
     document.getElementById('accessibility-toggle').addEventListener('click', toggleAccessibilityPanel);
   });
 
-  function toggleAccessibilityPanel() {
-    const panel = document.getElementById('accessibility-panel');
-    panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-  }
+window.toggleAccessibilityPanel = function () {
+  const panel = document.getElementById('accessibility-panel');
+  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+};
 
-  function increaseFont() {
-    document.body.style.fontSize = 'larger';
+window.increaseFont = function () {
+  document.body.style.fontSize = 'larger';
+};
+
+window.decreaseFont = function () {
+  document.body.style.fontSize = 'smaller';
+};
+
+window.toggleReadableFont = function () {
+  document.body.classList.toggle('readable-font');
+};
+
+window.toggleContrast = function () {
+  document.body.classList.toggle('high-contrast');
+};
+
+window.toggleDarkContrast = function () {
+  document.body.classList.toggle('dark-contrast');
+};
+
+window.toggleLightContrast = function () {
+  document.body.classList.toggle('light-contrast');
+};
+
+window.alignText = function (direction) {
+  document.body.style.textAlign = direction;
+};
+
+window.toggleLetterSpacing = function () {
+  document.body.classList.toggle('letter-spacing');
+};
+
+window.toggleLineSpacing = function () {
+  document.body.classList.toggle('line-spacing');
+};
+
+window.highlightLinks = function () {
+  const style = document.getElementById('link-highlight-style');
+  if (style) style.remove();
+  else {
+    const s = document.createElement('style');
+    s.id = 'link-highlight-style';
+    s.innerHTML = `a { background: yellow; color: black !important; }`;
+    document.head.appendChild(s);
   }
-  function decreaseFont() {
-    document.body.style.fontSize = 'smaller';
+};
+
+window.highlightHeadings = function () {
+  const style = document.getElementById('heading-highlight-style');
+  if (style) style.remove();
+  else {
+    const s = document.createElement('style');
+    s.id = 'heading-highlight-style';
+    s.innerHTML = `h1,h2,h3,h4,h5,h6 { background: lightblue; color: black !important; }`;
+    document.head.appendChild(s);
   }
-  function toggleReadableFont() {
-    document.body.classList.toggle('readable-font');
+};
+
+window.highlightFocus = function () {
+  const existing = document.getElementById('focus-highlight-style');
+  if (existing) existing.remove();
+  else {
+    const style = document.createElement('style');
+    style.id = 'focus-highlight-style';
+    style.innerHTML = `*:focus { outline: 3px solid orange !important; outline-offset: 2px !important; }`;
+    document.head.appendChild(style);
   }
-  function toggleContrast() {
-    document.body.classList.toggle('high-contrast');
+};
+
+window.toggleImages = function () {
+  document.querySelectorAll('img').forEach(img => {
+    img.style.display = img.style.display === 'none' ? '' : 'none';
+  });
+};
+
+window.muteMedia = function () {
+  document.querySelectorAll('video,audio').forEach(el => {
+    el.muted = true;
+  });
+};
+
+window.stopAnimations = function () {
+  if (!document.getElementById('stop-animation-style')) {
+    const style = document.createElement('style');
+    style.id = 'stop-animation-style';
+    style.innerHTML = `* { animation: none !important; transition: none !important; }`;
+    document.head.appendChild(style);
   }
-  function toggleDarkContrast() {
-    document.body.classList.toggle('dark-contrast');
-  }
-  function toggleLightContrast() {
-    document.body.classList.toggle('light-contrast');
-  }
-  function alignText(direction) {
-    document.body.style.textAlign = direction;
-  }
-  function toggleLetterSpacing() {
-    document.body.classList.toggle('letter-spacing');
-  }
-  function toggleLineSpacing() {
-    document.body.classList.toggle('line-spacing');
-  }
-  function highlightLinks() {
-    const style = document.getElementById('link-highlight-style');
-    if (style) style.remove();
-    else {
-      const s = document.createElement('style');
-      s.id = 'link-highlight-style';
-      s.innerHTML = `a { background: yellow; color: black !important; }`;
-      document.head.appendChild(s);
-    }
-  }
-  function highlightHeadings() {
-    const style = document.getElementById('heading-highlight-style');
-    if (style) style.remove();
-    else {
-      const s = document.createElement('style');
-      s.id = 'heading-highlight-style';
-      s.innerHTML = `h1,h2,h3,h4,h5,h6 { background: lightblue; color: black !important; }`;
-      document.head.appendChild(s);
-    }
-  }
-  function highlightFocus() {
-    const existing = document.getElementById('focus-highlight-style');
-    if (existing) existing.remove();
-    else {
-      const style = document.createElement('style');
-      style.id = 'focus-highlight-style';
-      style.innerHTML = `*:focus { outline: 3px solid orange !important; outline-offset: 2px !important; }`;
-      document.head.appendChild(style);
-    }
-  }
-  function toggleImages() {
-    document.querySelectorAll('img').forEach(img => {
-      img.style.display = img.style.display === 'none' ? '' : 'none';
-    });
-  }
-  function muteMedia() {
-    document.querySelectorAll('video,audio').forEach(el => {
-      el.muted = true;
-    });
-  }
-  function stopAnimations() {
-    const style = document.getElementById('stop-animation-style');
-    if (style) {
-      style.remove();
-    } else {
-      const s = document.createElement('style');
-      s.id = 'stop-animation-style';
-      s.innerHTML = `* { animation: none !important; transition: none !important; }`;
-      document.head.appendChild(s);
-    }
-  }
-  function toggleCursor() {
-    document.body.classList.toggle('big-cursor');
-  }
-  function toggleReadingMode() {
-    document.body.classList.toggle('reading-mode');
-  }
-  function resetAccessibility() {
-    location.reload();
-  }
+};
+
+window.toggleCursor = function () {
+  document.body.classList.toggle('big-cursor');
+};
+
+window.toggleReadingMode = function () {
+  document.body.classList.toggle('reading-mode');
+};
+
+window.resetAccessibility = function () {
+  location.reload();
+};
 })();
