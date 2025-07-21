@@ -177,7 +177,7 @@ window.highlightLinks = function () {
   else {
     const s = document.createElement('style');
     s.id = 'link-highlight-style';
-    s.innerHTML = `a { background: yellow; color: black !important; }`;
+    s.innerHTML = `a { background: yellow; color: black !important; text-decoration: underline !important; }`;
     document.head.appendChild(s);
   }
 };
