@@ -1,251 +1,223 @@
-(function() {
-  const html = `
-    <button id="accessibility-toggle" style="
-      position: fixed; bottom: 20px; right: 20px; background: #005cbf; color: white; border: none;
-      border-radius: 50%; width: 50px; height: 50px; font-size: 22px; cursor: pointer; z-index: 9999;">
-      <i class="fas fa-universal-access"></i>
-    </button>
-    <div id="accessibility-panel" style="
-      position: fixed; bottom: 80px; right: 20px; background: white; border: 1px solid #ccc; border-radius: 10px;
-      width: 280px; max-height: 80vh; overflow-y: auto; box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-      font-family: sans-serif; display: none; z-index: 9999; padding: 10px;">
-      
-      <div class="accessibility-group" style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">טקסט</strong>
-        <button onclick="increaseFont()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-search-plus"></i> טקסט+
-        </button>
-        <button onclick="decreaseFont()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-search-minus"></i> טקסט-
-        </button>
-        <button onclick="toggleReadableFont()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-font"></i> גופן קריא
-        </button>
-      </div>
+(function () {
+  const TOGGLE_ID = 'accessibility-toggle';
+  const PANEL_ID = 'accessibility-panel';
+  const PANEL_TITLE_ID = 'accessibility-panel-title';
 
-      <div class="accessibility-group" style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">ניגודיות</strong>
-        <button onclick="toggleContrast()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-adjust"></i> גבוהה
-        </button>
-        <button onclick="toggleDarkContrast()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-moon"></i> כהה
-        </button>
-        <button onclick="toggleLightContrast()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-sun"></i> בהירה
-        </button>
-      </div>
+  const fontSizeClasses = ['font-size-default', 'font-size-large', 'font-size-xlarge'];
+  let fontSizeLevel = 0;
+  let lastFocusedElement = null;
 
-      <div class="accessibility-group" style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">עיצוב טקסט</strong>
-        <button onclick="toggleLetterSpacing()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-text-width"></i> ריווח אותיות
-        </button>
-        <button onclick="toggleLineSpacing()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-text-height"></i> ריווח שורות
-        </button>
-        <button onclick="alignText('right')" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-align-right"></i> לימין
-        </button>
-        <button onclick="alignText('center')" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-align-center"></i> למרכז
-        </button>
-        <button onclick="alignText('left')" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-align-left"></i> לשמאל
-        </button>
-      </div>
+  function createWidgetMarkup() {
+    return `
+      <button id="${TOGGLE_ID}" type="button" aria-label="פתיחת תפריט נגישות" aria-controls="${PANEL_ID}" aria-expanded="false">
+        <i class="fas fa-universal-access" aria-hidden="true"></i>
+      </button>
 
-      <div class="accessibility-group" style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">הדגשות</strong>
-        <button onclick="highlightLinks()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-link"></i> קישורים
-        </button>
-        <button onclick="highlightHeadings()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-heading"></i> כותרות
-        </button>
-        <button onclick="highlightFocus()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-eye"></i> פוקוס
-        </button>
-      </div>
+      <section id="${PANEL_ID}" role="dialog" aria-modal="false" aria-hidden="true" aria-labelledby="${PANEL_TITLE_ID}" tabindex="-1" hidden>
+        <h2 id="${PANEL_TITLE_ID}">אפשרויות נגישות</h2>
 
-      <div class="accessibility-group" style="margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">הסתרות</strong>
-        <button onclick="toggleImages()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-image"></i> הסתרת תמונות
-        </button>
-        <button onclick="muteMedia()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-volume-mute"></i> השתקה
-        </button>
-        <button onclick="stopAnimations()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-ban"></i> עצירת אנימציות
-        </button>
-      </div>
+        <div class="accessibility-group" role="group" aria-label="טקסט">
+          <strong>טקסט</strong>
+          <button type="button" data-action="increaseFont"><i class="fas fa-search-plus" aria-hidden="true"></i> טקסט+</button>
+          <button type="button" data-action="decreaseFont"><i class="fas fa-search-minus" aria-hidden="true"></i> טקסט-</button>
+          <button type="button" data-toggle="readable-font"><i class="fas fa-font" aria-hidden="true"></i> גופן קריא</button>
+        </div>
 
-      <div class="accessibility-group" style="margin-bottom:10px;">
-        <strong style="display:block; margin-bottom:6px;">תוספות</strong>
-        <button onclick="toggleCursor()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-mouse-pointer"></i> סמן גדול
-        </button>
-        <button onclick="toggleReadingMode()" style="margin:3px 5px 6px 0; padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-book-reader"></i> מצב קריאה
-        </button>
-      </div>
+        <div class="accessibility-group" role="group" aria-label="ניגודיות">
+          <strong>ניגודיות</strong>
+          <button type="button" data-toggle="high-contrast" data-group="contrast"><i class="fas fa-adjust" aria-hidden="true"></i> גבוהה</button>
+          <button type="button" data-toggle="dark-contrast" data-group="contrast"><i class="fas fa-moon" aria-hidden="true"></i> כהה</button>
+          <button type="button" data-toggle="light-contrast" data-group="contrast"><i class="fas fa-sun" aria-hidden="true"></i> בהירה</button>
+        </div>
 
-      <div style="text-align:center; margin-top:10px;">
-        <button onclick="resetAccessibility()" style="padding:6px 10px; font-size:13px; cursor:pointer;">
-          <i class="fas fa-undo"></i> איפוס
-        </button>
-      </div>
-    </div>
-  `;
+        <div class="accessibility-group" role="group" aria-label="עיצוב טקסט">
+          <strong>עיצוב טקסט</strong>
+          <button type="button" data-toggle="letter-spacing"><i class="fas fa-text-width" aria-hidden="true"></i> ריווח אותיות</button>
+          <button type="button" data-toggle="line-spacing"><i class="fas fa-text-height" aria-hidden="true"></i> ריווח שורות</button>
+          <button type="button" data-action="align-right"><i class="fas fa-align-right" aria-hidden="true"></i> לימין</button>
+          <button type="button" data-action="align-center"><i class="fas fa-align-center" aria-hidden="true"></i> למרכז</button>
+          <button type="button" data-action="align-left"><i class="fas fa-align-left" aria-hidden="true"></i> לשמאל</button>
+        </div>
 
-  document.addEventListener('DOMContentLoaded', () => {
-    document.body.insertAdjacentHTML('beforeend', html);
-    document.getElementById('accessibility-toggle').addEventListener('click', toggleAccessibilityPanel);
-  });
+        <div class="accessibility-group" role="group" aria-label="הדגשות">
+          <strong>הדגשות</strong>
+          <button type="button" data-style-toggle="link-highlight-style"><i class="fas fa-link" aria-hidden="true"></i> קישורים</button>
+          <button type="button" data-style-toggle="heading-highlight-style"><i class="fas fa-heading" aria-hidden="true"></i> כותרות</button>
+          <button type="button" data-style-toggle="focus-highlight-style"><i class="fas fa-eye" aria-hidden="true"></i> פוקוס</button>
+        </div>
 
-window.toggleAccessibilityPanel = function () {
-  const panel = document.getElementById('accessibility-panel');
-  panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
-};
+        <div class="accessibility-group" role="group" aria-label="הסתרות">
+          <strong>הסתרות</strong>
+          <button type="button" data-action="toggleImages"><i class="fas fa-image" aria-hidden="true"></i> הסתרת תמונות</button>
+          <button type="button" data-action="muteMedia"><i class="fas fa-volume-mute" aria-hidden="true"></i> השתקה</button>
+          <button type="button" data-style-toggle="stop-animation-style"><i class="fas fa-ban" aria-hidden="true"></i> עצירת אנימציות</button>
+        </div>
 
-// מוסיף מחלקות של גודל טקסט
-const fontSizeStyles = document.createElement('style');
-fontSizeStyles.innerHTML = `
-  .font-size-default { font-size: 100% !important; }
-  .font-size-large { font-size: 115% !important; }
-  .font-size-xlarge { font-size: 130% !important; }
-`;
-document.head.appendChild(fontSizeStyles);
+        <div class="accessibility-group" role="group" aria-label="תוספות">
+          <strong>תוספות</strong>
+          <button type="button" data-toggle="big-cursor"><i class="fas fa-mouse-pointer" aria-hidden="true"></i> סמן גדול</button>
+          <button type="button" data-toggle="reading-mode"><i class="fas fa-book-reader" aria-hidden="true"></i> מצב קריאה</button>
+        </div>
 
-// מוסיף כברירת מחדל
-document.body.classList.add('font-size-default');
-
-let fontSizeLevel = 0;
-const fontSizeClasses = ['font-size-default', 'font-size-large', 'font-size-xlarge'];
-
-function updateFontSizeClass() {
-  document.body.classList.remove(...fontSizeClasses);
-  document.body.classList.add(fontSizeClasses[fontSizeLevel]);
-}
-
-window.increaseFont = function () {
-  if (fontSizeLevel < fontSizeClasses.length - 1) {
-    fontSizeLevel++;
-    updateFontSizeClass();
+        <div class="accessibility-actions">
+          <button type="button" data-action="reset"><i class="fas fa-undo" aria-hidden="true"></i> איפוס</button>
+        </div>
+      </section>
+    `;
   }
-};
 
-window.decreaseFont = function () {
-  if (fontSizeLevel > 0) {
-    fontSizeLevel--;
-    updateFontSizeClass();
+  function ensureFontSizeStyles() {
+    if (document.getElementById('accessibility-font-size-style')) return;
+
+    const fontSizeStyles = document.createElement('style');
+    fontSizeStyles.id = 'accessibility-font-size-style';
+    fontSizeStyles.innerHTML = `
+      .font-size-default { font-size: 100% !important; }
+      .font-size-large { font-size: 115% !important; }
+      .font-size-xlarge { font-size: 130% !important; }
+    `;
+    document.head.appendChild(fontSizeStyles);
   }
-};
 
-window.toggleReadableFont = function () {
-  document.body.classList.toggle('readable-font');
-};
-
-window.toggleContrast = function () {
-  document.body.classList.toggle('high-contrast');
-};
-
-window.toggleDarkContrast = function () {
-  document.body.classList.toggle('dark-contrast');
-};
-
-window.toggleLightContrast = function () {
-  document.body.classList.toggle('light-contrast');
-};
-
-window.alignText = function (direction) {
-  document.body.style.textAlign = direction;
-};
-
-window.toggleLetterSpacing = function () {
-  document.body.classList.toggle('letter-spacing');
-};
-
-window.toggleLineSpacing = function () {
-  document.body.classList.toggle('line-spacing');
-};
-
-window.highlightLinks = function () {
-  const style = document.getElementById('link-highlight-style');
-  if (style) style.remove();
-  else {
-    const s = document.createElement('style');
-    s.id = 'link-highlight-style';
-    s.innerHTML = `a { background: yellow; color: black !important; text-decoration: underline !important; }`;
-    document.head.appendChild(s);
+  function updateFontSizeClass() {
+    document.body.classList.remove(...fontSizeClasses);
+    document.body.classList.add(fontSizeClasses[fontSizeLevel]);
   }
-};
 
-window.highlightHeadings = function () {
-  const style = document.getElementById('heading-highlight-style');
-  if (style) style.remove();
-  else {
-    const s = document.createElement('style');
-    s.id = 'heading-highlight-style';
-    s.innerHTML = `h1,h2,h3,h4,h5,h6 { background: lightblue; color: black !important; }`;
-    document.head.appendChild(s);
+  function setPressed(button, isPressed) {
+    button.setAttribute('aria-pressed', String(isPressed));
+    button.classList.toggle('is-active', isPressed);
   }
-};
 
-window.highlightFocus = function () {
-  const existing = document.getElementById('focus-highlight-style');
-  if (existing) {
-    existing.remove();
+  function togglePanel(forceOpen) {
+    const panel = document.getElementById(PANEL_ID);
+    const toggleButton = document.getElementById(TOGGLE_ID);
+    const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : panel.hidden;
+
+    panel.hidden = !shouldOpen;
+    panel.setAttribute('aria-hidden', String(!shouldOpen));
+    toggleButton.setAttribute('aria-expanded', String(shouldOpen));
+
+    if (shouldOpen) {
+      lastFocusedElement = document.activeElement;
+      panel.focus();
+    } else if (lastFocusedElement && lastFocusedElement.focus) {
+      lastFocusedElement.focus();
+    }
+  }
+
+  function toggleStyleById(styleId) {
+    const existing = document.getElementById(styleId);
+    if (existing) {
+      existing.remove();
+      return false;
+    }
+
+    const style = document.createElement('style');
+    style.id = styleId;
+
+    if (styleId === 'link-highlight-style') {
+      style.innerHTML = 'a { background: #ffeb3b; color: #000 !important; text-decoration: underline !important; }';
+    } else if (styleId === 'heading-highlight-style') {
+      style.innerHTML = 'h1,h2,h3,h4,h5,h6 { background: #bde5ff; color: #000 !important; }';
+    } else if (styleId === 'focus-highlight-style') {
+      style.innerHTML = '*:focus { outline: 3px solid #ff8c00 !important; outline-offset: 2px !important; box-shadow: 0 0 0 2px #ffcc80 !important; }';
+    } else if (styleId === 'stop-animation-style') {
+      style.innerHTML = '*, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }';
+    }
+
+    document.head.appendChild(style);
+    return true;
+  }
+
+  function handleAction(action) {
+    if (action === 'increaseFont' && fontSizeLevel < fontSizeClasses.length - 1) {
+      fontSizeLevel += 1;
+      updateFontSizeClass();
+    }
+
+    if (action === 'decreaseFont' && fontSizeLevel > 0) {
+      fontSizeLevel -= 1;
+      updateFontSizeClass();
+    }
+
+    if (action === 'align-right') document.body.style.textAlign = 'right';
+    if (action === 'align-center') document.body.style.textAlign = 'center';
+    if (action === 'align-left') document.body.style.textAlign = 'left';
+
+    if (action === 'toggleImages') {
+      document.querySelectorAll('img').forEach((img) => {
+        img.style.visibility = img.style.visibility === 'hidden' ? '' : 'hidden';
+      });
+    }
+
+    if (action === 'muteMedia') {
+      document.querySelectorAll('video,audio').forEach((el) => {
+        el.muted = true;
+      });
+    }
+
+    if (action === 'reset') {
+      location.reload();
+    }
+  }
+
+  function initializeWidget() {
+    if (!document.body || document.getElementById(TOGGLE_ID)) return;
+
+    document.body.insertAdjacentHTML('beforeend', createWidgetMarkup());
+    ensureFontSizeStyles();
+    document.body.classList.add('font-size-default');
+
+    const panel = document.getElementById(PANEL_ID);
+    const toggleButton = document.getElementById(TOGGLE_ID);
+
+    toggleButton.addEventListener('click', () => togglePanel());
+
+    panel.addEventListener('click', (event) => {
+      const target = event.target.closest('button');
+      if (!target) return;
+
+      const toggleClass = target.dataset.toggle;
+      const action = target.dataset.action;
+      const styleToggle = target.dataset.styleToggle;
+
+      if (toggleClass) {
+        const group = target.dataset.group;
+
+        if (group) {
+          panel.querySelectorAll(`button[data-group="${group}"]`).forEach((btn) => {
+            const className = btn.dataset.toggle;
+            const isActive = btn === target ? !document.body.classList.contains(className) : false;
+            if (btn !== target) document.body.classList.remove(className);
+            setPressed(btn, isActive);
+          });
+        }
+
+        const isPressed = document.body.classList.toggle(toggleClass);
+        setPressed(target, isPressed);
+      }
+
+      if (action) handleAction(action);
+
+      if (styleToggle) {
+        const active = toggleStyleById(styleToggle);
+        setPressed(target, active);
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !panel.hidden) {
+        togglePanel(false);
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeWidget);
   } else {
-    const style = document.createElement('style');
-    style.id = 'focus-highlight-style';
-    style.innerHTML = `
-      *:focus {
-        outline: 3px solid orange !important;
-        outline-offset: 2px !important;
-        box-shadow: 0 0 5px 2px orange !important;
-      }
-    `;
-    document.head.appendChild(style);
+    initializeWidget();
   }
-};
 
-window.toggleImages = function () {
-  document.querySelectorAll('img').forEach(img => {
-    img.style.display = img.style.display === 'none' ? '' : 'none';
-  });
-};
-
-window.muteMedia = function () {
-  document.querySelectorAll('video,audio').forEach(el => {
-    el.muted = true;
-  });
-};
-
-window.stopAnimations = function () {
-  if (!document.getElementById('stop-animation-style')) {
-    const style = document.createElement('style');
-    style.id = 'stop-animation-style';
-    style.innerHTML = `
-      *, *::before, *::after {
-        animation: none !important;
-        transition: none !important;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-};
-
-window.toggleCursor = function () {
-  document.body.classList.toggle('big-cursor');
-};
-
-window.toggleReadingMode = function () {
-  document.body.classList.toggle('reading-mode');
-};
-
-window.resetAccessibility = function () {
-  location.reload();
-};
+  window.toggleAccessibilityPanel = togglePanel;
 })();
