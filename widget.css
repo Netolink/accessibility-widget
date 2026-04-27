@@ -5,13 +5,13 @@
 
 /* ניגודיות גבוהה */
 body.high-contrast {
-  background-color: black !important;
-  color: yellow !important;
+  background-color: #000 !important;
+  color: #ffeb3b !important;
   filter: none !important;
 }
 
 body.high-contrast a {
-  color: yellow !important;
+  color: #ffeb3b !important;
 }
 
 /* ניגודיות כהה */
@@ -21,13 +21,13 @@ body.dark-contrast {
 }
 
 body.dark-contrast a {
-  color: #66aaff !important;
+  color: #7ab8ff !important;
 }
 
 /* ניגודיות בהירה */
 body.light-contrast {
-  background-color: #ffffff !important;
-  color: #111111 !important;
+  background-color: #fff !important;
+  color: #111 !important;
 }
 
 body.light-contrast a {
@@ -69,11 +69,6 @@ body.line-spacing * {
   box-shadow: none !important;
 }
 
-/* הסתרת אלמנטים מסיחים */
-/*.reading-mode *:not(p):not(h1):not(h2):not(h3):not(h4):not(h5):not(h6):not(li):not(blockquote):not(a) {
-  display: none !important;
-}*/
-
 /* הסתרת מדיה */
 .reading-mode img,
 .reading-mode video,
@@ -96,27 +91,121 @@ body.line-spacing * {
   transition: none !important;
 }
 
-/* כפתורים ותפריט - ייתכן ותוכל להתאים לפי הצורך */
+.sr-only {
+  border: 0;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+#accessibility-toggle {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #003087;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+#accessibility-panel {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  background: #fff;
+  border: 1px solid #c3c8d0;
+  border-radius: 10px;
+  width: 300px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgb(0 0 0 / 30%);
+  font-family: Arial, sans-serif;
+  z-index: 9999;
+  padding: 12px;
+}
+
+.accessibility-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+#accessibility-panel h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+#accessibility-panel .close-button {
+  min-width: 40px;
+  min-height: 40px;
+}
+
 #accessibility-panel button {
   background-color: #f9f9f9;
-  border: 1px solid #ccc;
+  border: 1px solid #9aa4b2;
   border-radius: 6px;
   padding: 6px 10px;
   margin: 3px 5px 6px 0;
-  font-size: 13px;
+  font-size: 14px;
   cursor: pointer;
 }
 
 #accessibility-panel button:hover {
-  background-color: #e0e0e0;
+  background-color: #e6edf8;
+}
+
+#accessibility-panel button.is-active {
+  background-color: #003087;
+  color: #fff;
+  border-color: #00235f;
+}
+
+#accessibility-toggle:focus-visible,
+#accessibility-panel button:focus-visible,
+#accessibility-panel:focus-visible {
+  outline: 3px solid #ffbf47;
+  outline-offset: 2px;
 }
 
 /* כותרות קבוצות בתפריט */
+.accessibility-group {
+  margin-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
 .accessibility-group strong {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.accessibility-actions {
+  text-align: center;
+  margin-top: 10px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #accessibility-toggle,
+  #accessibility-panel,
+  #accessibility-panel * {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* תמיכה בתגובה נייד */
@@ -127,6 +216,7 @@ body.line-spacing * {
     bottom: 70px !important;
     max-height: 60vh !important;
   }
+
   #accessibility-toggle {
     width: 45px !important;
     height: 45px !important;
