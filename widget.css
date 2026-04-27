@@ -91,6 +91,7 @@ body.line-spacing * {
   transition: none !important;
 }
 
+<<<<<<< HEAD
 .sr-only {
   border: 0;
   clip: rect(0 0 0 0);
@@ -104,6 +105,8 @@ body.line-spacing * {
   white-space: nowrap;
 }
 
+=======
+>>>>>>> main
 #accessibility-toggle {
   position: fixed;
   bottom: 20px;
@@ -129,12 +132,17 @@ body.line-spacing * {
   width: 300px;
   max-height: 80vh;
   overflow-y: auto;
+<<<<<<< HEAD
   box-shadow: 0 4px 10px rgb(0 0 0 / 30%);
+=======
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+>>>>>>> main
   font-family: Arial, sans-serif;
   z-index: 9999;
   padding: 12px;
 }
 
+<<<<<<< HEAD
 .accessibility-header {
   display: flex;
   align-items: center;
@@ -142,16 +150,21 @@ body.line-spacing * {
   gap: 8px;
 }
 
+=======
+>>>>>>> main
 #accessibility-panel h2 {
   margin: 0 0 10px;
   font-size: 18px;
 }
 
+<<<<<<< HEAD
 #accessibility-panel .close-button {
   min-width: 40px;
   min-height: 40px;
 }
 
+=======
+>>>>>>> main
 #accessibility-panel button {
   background-color: #f9f9f9;
   border: 1px solid #9aa4b2;
